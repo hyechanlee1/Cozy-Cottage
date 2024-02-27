@@ -1,0 +1,4 @@
+repository "Fireflies@hyechanlee1@cloud"
+  path "/"
+    br "/main"
+    co "/main"
