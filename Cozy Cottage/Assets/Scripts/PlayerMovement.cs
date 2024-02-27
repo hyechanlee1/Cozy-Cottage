@@ -11,6 +11,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] Transform groundCheck;
     [SerializeField] LayerMask ground;
 
+
     // Start is called before the first frame update
     void Start()
     {
@@ -22,8 +23,14 @@ public class PlayerMovement : MonoBehaviour
     {
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
+        float SprintSpeed = movementSpeed * 2;
 
         rb.velocity = new Vector3(horizontalInput * movementSpeed, rb.velocity.y, verticalInput * movementSpeed);
+
+        if (Input.GetButton("Sprint"))
+        {
+            rb.velocity = new Vector3(horizontalInput * SprintSpeed, rb.velocity.y, verticalInput  * SprintSpeed);
+        }
 
         if (Input.GetButtonDown("Jump") && IsGrounded())
         {
