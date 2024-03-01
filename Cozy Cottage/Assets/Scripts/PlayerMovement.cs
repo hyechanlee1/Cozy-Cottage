@@ -6,10 +6,7 @@ public class PlayerMovement : MonoBehaviour
 {
     Rigidbody rb;
     [SerializeField] float movementSpeed = 5f;
-    [SerializeField] float jumpForce = 5f;
-
-    [SerializeField] Transform groundCheck;
-    [SerializeField] LayerMask ground;
+    [SerializeField] float sprintMultiplier = 2f;
 
 
     // Start is called before the first frame update
@@ -23,25 +20,18 @@ public class PlayerMovement : MonoBehaviour
     {
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
-        float SprintSpeed = movementSpeed * 2;
 
-        rb.velocity = new Vector3(horizontalInput * movementSpeed, rb.velocity.y, verticalInput * movementSpeed);
+        Vector3 movementDirection = new Vector3(horizontalInput, 0f, verticalInput).normalized;
 
-        if (Input.GetButton("Sprint"))
+        float currentSpeed = Input.GetButton("Sprint") ? movementSpeed * sprintMultiplier : movementSpeed;
+
+        rb.velocity = new Vector3(movementDirection.x * currentSpeed, rb.velocity.y, movementDirection.z * currentSpeed);
+
+        if (movementDirection != Vector3.zero)
         {
-            rb.velocity = new Vector3(horizontalInput * SprintSpeed, rb.velocity.y, verticalInput  * SprintSpeed);
+            Quaternion targetRotation = Quaternion.LookRotation(movementDirection);
+            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
         }
 
-        if (Input.GetButtonDown("Jump") && IsGrounded())
-        {
-            rb.velocity = new Vector3(rb.velocity.x, jumpForce, rb.velocity.z);
-        }
-
-    }
-
-
-    bool IsGrounded()
-    {
-        return Physics.CheckSphere(groundCheck.position, .1f, ground);
     }
 }
